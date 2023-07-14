@@ -8,7 +8,7 @@ vim.opt.wildignore = vim.opt.wildignore + '*/.git/*,*/.hg/*,*/.svn/*,*/.DS_Store
 vim.opt.writebackup = false
 vim.opt.swapfile = false
 vim.opt.termguicolors = true
-vim.opt.rtp = vim.opt.rtp + '/bin/fzf'
+vim.opt.rtp = vim.opt.rtp + '/opt/homebrew/bin/fzf'
 
 vim.g.mapleader = ','
 
@@ -16,14 +16,14 @@ vim.keymap.set('n', '<leader>sv', '<cmd>source $MYVIMRC<cr>', {desc = 'reload nv
 vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', {desc = 'write file'})
 vim.keymap.set({'n', 'x'}, 'cy', '"+y', {desc = 'yank to clipboard'})
 vim.keymap.set({'n', 'x'}, 'cp', '"+p', {desc = 'paste from clipboard'})
-vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'paste from clipboard'})
-vim.keymap.set('n', '<space>', '/', {desc = 'paste from clipboard'})
-vim.keymap.set('n', '<C-space>', '?', {desc = 'paste from clipboard'})
+vim.keymap.set('n', '<leader>a', ':keepjumps normal! ggVG<cr>', {desc = 'select all'})
+vim.keymap.set({'n', 'x'}, '<leader>f', ':%s///g<left><left><left>', {desc = 'search and replace'})
 vim.keymap.set('n', '<C-j>', '<C-W>j', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<C-k>', '<C-W>k', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<C-h>', '<C-W>h', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<C-l>', '<C-W>l', {desc = 'paste from clipboard'})
-vim.keymap.set('n', '<leader>bd', ':bp<bar>sp<bar>bn<bar>bd<cr>', {desc = 'paste from clipboard'})
+vim.keymap.set('n', '<leader>bd', ':bp<bar>sp<bar>bn<bar>bd<cr>', {desc = 'delete buffer'})
+vim.keymap.set('n', '<leader>o', ':Buffers<cr>', {desc = 'open buffers'})
 
 vim.api.nvim_create_user_command('W', 'w !sudo tee % > /dev/null', {desc = 'write file as sudo'})
 
@@ -42,21 +42,28 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   {
     "nvim-telescope/telescope-file-browser.nvim",
-    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim", "nvim-telescope/telescope-live-grep-args.nvim" },
     config = function()
       require('telescope').setup()
       require('telescope').load_extension 'file_browser'
+      require('telescope').load_extension 'live_grep_args'
       vim.api.nvim_set_keymap(
         "n",
-        "<leader>fb",
+        "<leader>nn",
         ":Telescope file_browser<cr>",
         { noremap = true }
       )
       -- open file_browser with the path of the current buffer
       vim.api.nvim_set_keymap(
         "n",
-        "<space>fb",
-        ":Telescope file_browser path=%:p:h select_buffer=true",
+        "<space>nn",
+        ":Telescope file_browser path=%:p:h select_buffer=true<cr>",
+        { noremap = true }
+      )
+      vim.api.nvim_set_keymap(
+        "n",
+        "<leader>g",
+        ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
         { noremap = true }
       )
     end
