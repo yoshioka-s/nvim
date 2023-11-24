@@ -142,6 +142,8 @@ require('lazy').setup({
           'tsserver',
           'jsonls',
           'volar',
+          'eslint',
+          'prettier',
         },
       })
 
