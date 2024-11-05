@@ -263,6 +263,7 @@ require('lazy').setup({
   'folke/tokyonight.nvim',
   'christoomey/vim-tmux-navigator',
   'kien/ctrlp.vim',
+  'github/copilot.vim',
 })
 
 vim.cmd[[colorscheme tokyonight-storm]]
