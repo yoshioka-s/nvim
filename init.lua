@@ -22,6 +22,9 @@ vim.keymap.set('n', '<C-k>', '<C-W>k', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<C-h>', '<C-W>h', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<C-l>', '<C-W>l', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<leader>o', ':Buffers<cr>', {desc = 'open buffers'})
+vim.keymap.set('i', 'jj', '<esc>', {desc = 'escape'})
+vim.keymap.set('t', 'jj', [[<C-\><C-n>]], {desc = 'escape'})
+vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], {desc = 'escape'})
 
 if vim.g.vscode then
 else
@@ -94,7 +97,18 @@ if not vim.g.vscode then
       'lewis6991/gitsigns.nvim',
       event = 'BufRead',
       config = function()
-        require('gitsigns').setup()
+        require('gitsigns').setup({
+          on_attach = function(client, bufnr)
+            local gitsigns = require('gitsigns')
+            local function map(mode, l, r, opts)
+              opts = opts or {}
+              opts.buffer = bufnr
+              vim.keymap.set(mode, l, r, opts)
+            end
+            map('n', '<leader>hb', function() gitsigns.blame_line{full=true} end)
+            map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+          end
+        })
       end
     },
     {
@@ -282,8 +296,36 @@ if not vim.g.vscode then
       -- setting the keybinding for LazyGit with 'keys' is recommended in
       -- order to load the plugin when the command is run for the first time
       keys = {
-          { "<leader>c", "<cmd>LazyGit<cr>", desc = "LazyGit" }
+          { "<leader>c", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit" }
       }
+    },
+    {
+      'akinsho/toggleterm.nvim',
+      version = "*",
+      config = function ()
+        require('toggleterm').setup({
+          size = function(term)
+            if term.direction == "horizontal" then
+              return 20
+            elseif term.direction == "vertical" then
+              return vim.o.columns * 0.3
+            end
+          end,
+          open_mapping = '<leader>tt',
+          start_in_insert = true,
+          insert_mappings = true,
+          persist_size = true,
+          direction = 'horizontal',
+          close_on_exit = true,
+        })
+        vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]])
+        vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]])
+        vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]])
+        vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]])
+        vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]])
+        vim.keymap.set('n', '<leader>T', ':ToggleTerm direction=vertical name=home<cr>', {desc = 'toggle terminal vertically'})
+        vim.keymap.set('n', '<leader>tn', ':ToggleTerm name=', {desc = 'toggle terminal with name'})
+      end,
     },
     'folke/tokyonight.nvim',
     'christoomey/vim-tmux-navigator',
