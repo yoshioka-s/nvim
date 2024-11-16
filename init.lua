@@ -10,7 +10,7 @@ vim.opt.swapfile = false
 vim.opt.termguicolors = true
 vim.opt.rtp = vim.opt.rtp + '/opt/homebrew/bin/fzf'
 
-vim.g.mapleader = ','
+vim.g.mapleader = ' '
 
 vim.keymap.set('n', '<leader>sv', '<cmd>source $MYVIMRC<cr>', {desc = 'reload nvim config'})
 vim.keymap.set('n', '<leader>w', '<cmd>write<cr>', {desc = 'write file'})
@@ -30,6 +30,12 @@ if vim.g.vscode then
 else
   vim.keymap.set({'n', 'x'}, '<leader>f', ':%s///g<left><left><left>', {desc = 'search and replace'})
   vim.keymap.set('n', '<leader>bd', ':bp<bar>sp<bar>bn<bar>bd<cr>', {desc = 'delete buffer'})
+  vim.keymap.set('n', '<leader>cc', ':CopilotChatToggle<cr>', {desc = 'toggle copilot chat'})
+  vim.keymap.set('n', '<leader>he', ':CopilotChatExplain<cr>', {desc = 'explain with copilot chat'})
+  vim.keymap.set('n', '<leader>hr', ':CopilotChatReview<cr>', {desc = 'review with copilot chat'})
+  vim.keymap.set('n', '<leader>hf', ':CopilotChatFix<cr>', {desc = 'fix with copilot chat'})
+  vim.keymap.set('n', '<leader>ho', ':CopilotChatOptimize<cr>', {desc = 'optimize with copilot chat'})
+  vim.keymap.set('n', '<leader>ht', ':CopilotChatTests<cr>', {desc = 'write test with copilot chat'})
 end
 vim.api.nvim_create_user_command('W', 'w !sudo tee % > /dev/null', {desc = 'write file as sudo'})
 
@@ -70,7 +76,7 @@ if not vim.g.vscode then
         )
         vim.api.nvim_set_keymap(
           "n",
-          "<leader>g",
+          "<leader>gg",
           ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
           { noremap = true }
         )
@@ -296,7 +302,7 @@ if not vim.g.vscode then
       -- setting the keybinding for LazyGit with 'keys' is recommended in
       -- order to load the plugin when the command is run for the first time
       keys = {
-          { "<leader>c", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit" }
+          { "<C-g>t", "<cmd>LazyGitCurrentFile<cr>", desc = "LazyGit" }
       }
     },
     {
@@ -328,9 +334,21 @@ if not vim.g.vscode then
       end,
     },
     'folke/tokyonight.nvim',
-    'christoomey/vim-tmux-navigator',
     'kien/ctrlp.vim',
-    'https://github.com/github/copilot.vim.git'
+    'https://github.com/github/copilot.vim.git',
+    {
+      'CopilotC-Nvim/CopilotChat.nvim',
+      branch = 'canary',
+      dependencies = {
+        { 'github/copilot.vim' }, -- or github/copilot.vim
+        { 'nvim-lua/plenary.nvim' }, -- for curl, log wrapper
+      },
+      build = 'ake tiktoken', -- Only on MacOS or Linux
+      opts = {
+        -- See Configuration section for options
+      },
+      -- See Commands section for default commands if you want to lazy load on them
+    },
   })
   vim.cmd[[colorscheme tokyonight-storm]]
 end
