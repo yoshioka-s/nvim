@@ -70,7 +70,7 @@ if not vim.g.vscode then
         -- open file_browser with the path of the current buffer
         vim.api.nvim_set_keymap(
           "n",
-          "<space>nn",
+          "<space>nc",
           ":Telescope file_browser path=%:p:h select_buffer=true<cr>",
           { noremap = true }
         )
