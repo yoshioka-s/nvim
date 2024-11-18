@@ -24,7 +24,6 @@ vim.keymap.set('n', '<C-l>', '<C-W>l', {desc = 'paste from clipboard'})
 vim.keymap.set('n', '<leader>o', ':Buffers<cr>', {desc = 'open buffers'})
 vim.keymap.set('i', 'jj', '<esc>', {desc = 'escape'})
 vim.keymap.set('t', 'jj', [[<C-\><C-n>]], {desc = 'escape'})
-vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], {desc = 'escape'})
 
 if vim.g.vscode then
 else
